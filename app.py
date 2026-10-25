@@ -188,7 +188,7 @@ def init_db():
             """
         )
 
-        # Migrate an existing database without deleting saved records.
+        # Migrate existing databases without deleting saved records.
         for table_name in ("services", "project_requests"):
             existing_columns = {
                 row[1]
@@ -210,6 +210,12 @@ def init_db():
 
     finally:
         connection.close()
+
+
+# IMPORTANT:
+# Initialize the database when this module is imported by Gunicorn.
+# This fixes the "no such table: services" error on Render.
+init_db()
 
 
 # =========================================================
@@ -1365,8 +1371,6 @@ def not_found(error):
 # =========================================================
 
 if __name__ == "__main__":
-    init_db()
-
     app.run(
         debug=True,
         host="127.0.0.1",
