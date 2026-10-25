@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}Explore Services | FreelanceHub{% endblock %}
+
+{% block content %}
+
+<section class="section listing-page">
+
+  <div class="section-heading">
+
+    <div>
+      <div class="eyebrow">FIND YOUR NEXT COLLABORATOR</div>
+
+      <h2>Explore services</h2>
+
+      <p>
+        Discover talented freelancers ready to help bring
+        your ideas to life.
+      </p>
+    </div>
+
+    {% if current_role == 'freelancer' %}
+
+      <a class="btn btn-primary" href="{{ url_for('add_service') }}">
+        ＋ Publish a service
+      </a>
+
+    {% endif %}
+
+  </div>
+
+
+  <form class="search-panel"
+        method="get"
+        action="{{ url_for('services') }}">
+
+    <label class="search-box">
+
+      <span>⌕</span>
+
+      <input type="search"
+             name="q"
+             value="{{ search_query }}"
+             placeholder="Search services, skills, or freelancers...">
+
+    </label>
+
+
+    <label class="category-box">
+
+      <span>Category</span>
+
+      <select name="category">
+
+        <option value="">All categories</option>
+
+        {% for cat in categories %}
+
+          <option value="{{ cat }}"
+            {% if selected_category == cat %}selected{% endif %}>
+            {{ cat }}
+          </option>
+
+        {% endfor %}
+
+      </select>
+
+    </label>
+
+
+    <button class="btn btn-primary search-btn" type="submit">
+      Search →
+    </button>
+
+  </form>
+
+
+  <div class="results-line">
+
+    <span>
+      {{ services|length }} service{{ '' if services|length == 1 else 's' }}
+      found
+    </span>
+
+    {% if search_query or selected_category %}
+
+      <a href="{{ url_for('services') }}">Clear filters ×</a>
+
+    {% endif %}
+
+  </div>
+
+
+  <div class="service-grid">
+
+    {% for service in services %}
+
+      <article class="service-card">
+
+        <a class="card-hit"
+           href="{{ url_for('service_detail', service_id=service.id) }}"
+           aria-label="View {{ service.title }}">
+        </a>
+
+        <div class="service-art art-{{ loop.index0 % 4 }}">
+
+          <small>{{ service.category }}</small>
+
+          <span>
+            {% if loop.index0 % 4 == 0 %}
+              ✦
+            {% elif loop.index0 % 4 == 1 %}
+              ⌘
+            {% elif loop.index0 % 4 == 2 %}
+              ✎
+            {% else %}
+              ▧
+            {% endif %}
+          </span>
+
+        </div>
+
+
+        <div class="service-body">
+
+          <div class="seller">
+
+            <span class="seller-avatar">
+              {{ service.freelancer_name[0]|upper }}
+            </span>
+
+            <span>{{ service.freelancer_name }}</span>
+
+            <span class="verified">✓</span>
+
+          </div>
+
+
+          <h3>{{ service.title }}</h3>
+
+          <p>{{ service.description|truncate(105) }}</p>
+
+
+          <div class="service-foot">
+
+            <div>
+              <span class="starting">STARTING AT</span>
+              <br>
+              <strong>
+                ₹{{ "{:,.0f}".format(service.price) }}
+              </strong>
+            </div>
+
+            <span class="text-link">View details →</span>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    {% else %}
+
+      <div class="empty-state">
+
+        <div>⌕</div>
+
+        <h3>No services found</h3>
+
+        <p>Try a different keyword or category.</p>
+
+        <a class="btn btn-light" href="{{ url_for('services') }}">
+          Clear search
+        </a>
+
+      </div>
+
+    {% endfor %}
+
+  </div>
+
+</section>
+
+{% endblock %}

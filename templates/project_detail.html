@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} | FreelanceHub{% endblock %}
+
+{% block content %}
+
+<div class="detail-page">
+
+  <a class="back-link" href="{{ url_for('projects') }}">
+    ← Browse projects
+  </a>
+
+
+  <div class="detail-layout">
+
+    <article class="detail-main">
+
+      <div class="detail-label">
+        {{ project.category }} · {{ project.status|capitalize }}
+      </div>
+
+      <h1>{{ project.title }}</h1>
+
+
+      <div class="seller detail-seller">
+
+        <span class="seller-avatar large-avatar">
+          {{ project.client_name[0]|upper }}
+        </span>
+
+        <div>
+          <b>{{ project.client_name }}</b>
+          <small>Client on FreelanceHub</small>
+        </div>
+
+      </div>
+
+
+      <div class="detail-art">
+        ▤
+        <span>PROJECT OPPORTUNITY</span>
+      </div>
+
+
+      <h2>Project description</h2>
+
+      <p class="detail-description">
+        {{ project.description }}
+      </p>
+
+
+      <div class="contact-card">
+
+        <div class="eyebrow">CONTACT THE CLIENT</div>
+
+        <h3>{{ project.client_name }}</h3>
+
+        <p>
+          ☎ &nbsp;
+
+          <a href="tel:{{ project.contact_phone }}">
+            {{ project.contact_phone or 'Phone not provided' }}
+          </a>
+        </p>
+
+        <p>
+          ✉ &nbsp;
+
+          <a href="mailto:{{ project.contact_email or '' }}">
+            {{ project.contact_email or 'Email not provided' }}
+          </a>
+        </p>
+
+      </div>
+
+
+      {% if is_owner %}
+
+        <section class="dash-section">
+
+          <div class="section-heading compact">
+
+            <div>
+              <h2>Proposals received</h2>
+              <p>Review freelancer offers for this project.</p>
+            </div>
+
+          </div>
+
+
+          <div class="dashboard-list">
+
+            {% for proposal in proposals %}
+
+              <div class="request-item">
+
+                <div class="request-top">
+
+                  <div>
+                    <b>{{ proposal.freelancer_name }}</b>
+
+                    <span>
+                      Quote ₹{{ "{:,.0f}".format(proposal.proposed_price) }}
+                      · Delivery {{ proposal.delivery_days }} day(s)
+                    </span>
+                  </div>
+
+                  <span class="status status-{{ proposal.status }}">
+                    {{ proposal.status|capitalize }}
+                  </span>
+
+                </div>
+
+
+                <p>{{ proposal.message }}</p>
+
+
+                {% if project.status == 'open'
+                      and proposal.status == 'pending' %}
+
+                  <div class="status-actions">
+
+                    <form method="post"
+                          action="{{ url_for('accept_proposal', proposal_id=proposal.id) }}">
+
+                      <button class="btn btn-primary btn-small" type="submit">
+                        Accept proposal
+                      </button>
+
+                    </form>
+
+                  </div>
+
+                {% endif %}
+
+              </div>
+
+            {% else %}
+
+              <div class="empty-inline">
+                No proposals have been submitted yet.
+              </div>
+
+            {% endfor %}
+
+          </div>
+
+        </section>
+
+      {% endif %}
+
+    </article>
+
+
+    <aside class="request-card">
+
+      <div class="eyebrow">PROJECT BUDGET</div>
+
+      <div class="detail-price">
+        ₹{{ "{:,.0f}".format(project.budget) }}
+        <small>client's budget</small>
+      </div>
+
+      <p>
+        <strong>Deadline:</strong> {{ project.deadline }}
+      </p>
+
+      <p>
+        <strong>Status:</strong> {{ project.status|capitalize }}
+      </p>
+
+
+      {% if current_role == 'freelancer'
+            and not is_owner
+            and project.status == 'open' %}
+
+        {% if my_proposal %}
+
+          <div class="info-note">
+            You've already submitted a proposal for this project.
+          </div>
+
+        {% else %}
+
+          <form method="post"
+                action="{{ url_for('submit_proposal', project_id=project.id) }}"
+                class="form-stack">
+
+            <label>
+              Your proposal message
+
+              <textarea name="message"
+                        required
+                        maxlength="3000"
+                        rows="5"
+                        placeholder="Explain your approach and relevant experience."></textarea>
+            </label>
+
+
+            <label>
+              Your price (₹)
+
+              <input type="number"
+                     name="proposed_price"
+                     min="0"
+                     step="0.01"
+                     required
+                     placeholder="4000">
+            </label>
+
+
+            <label>
+              Delivery time (days)
+
+              <input type="number"
+                     name="delivery_days"
+                     min="1"
+                     required
+                     placeholder="7">
+            </label>
+
+
+            <button class="btn btn-primary full-btn" type="submit">
+              Submit proposal →
+            </button>
+
+          </form>
+
+        {% endif %}
+
+
+      {% elif not current_user %}
+
+        <a class="btn btn-primary full-btn"
+           href="{{ url_for('login') }}">
+          Log in to submit a proposal
+        </a>
+
+
+      {% elif current_role == 'client' and is_owner %}
+
+        <div class="info-note">
+          This is your project. You can review proposals below.
+        </div>
+
+
+      {% elif project.status != 'open' %}
+
+        <div class="info-note">
+          This project is no longer accepting proposals.
+        </div>
+
+      {% endif %}
+
+    </aside>
+
+  </div>
+
+</div>
+
+{% endblock %}

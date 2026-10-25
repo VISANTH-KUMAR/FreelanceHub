@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}Post a project | FreelanceHub{% endblock %}
+
+{% block content %}
+
+<section class="form-page contact-form-page">
+
+  <a class="back-link" href="{{ url_for('dashboard') }}">
+    ← Back to dashboard
+  </a>
+
+
+  <div class="form-card wide-card">
+
+    <div class="form-icon">▤</div>
+
+    <div class="eyebrow">FIND THE RIGHT TALENT</div>
+
+    <h2>Post a new project</h2>
+
+    <p class="muted">
+      Explain your requirements, set a budget,
+      and give freelancers a way to contact you.
+    </p>
+
+
+    <form method="post" class="form-stack">
+
+      <div class="form-section-title">
+
+        <span>01</span>
+
+        <div>
+          <b>Project details</b>
+          <small>What do you need help with?</small>
+        </div>
+
+      </div>
+
+
+      <label>
+        Project title
+
+        <input name="title"
+               required
+               maxlength="150"
+               value="{{ request.form.get('title','') }}"
+               placeholder="e.g. Build a portfolio website">
+      </label>
+
+
+      <label>
+        Category
+
+        <select name="category" required>
+
+          <option value="">Choose a category</option>
+
+          {% for cat in categories %}
+
+            <option value="{{ cat }}"
+              {% if request.form.get('category') == cat %}selected{% endif %}>
+              {{ cat }}
+            </option>
+
+          {% endfor %}
+
+        </select>
+
+      </label>
+
+
+      <label>
+        Project description
+
+        <textarea name="description"
+                  required
+                  maxlength="10000"
+                  rows="6"
+                  placeholder="Describe the work, deliverables, and skills you are looking for.">{{ request.form.get('description','') }}</textarea>
+      </label>
+
+
+      <div class="form-row">
+
+        <label>
+          Budget (₹)
+
+          <input name="budget"
+                 type="number"
+                 min="1"
+                 step="0.01"
+                 required
+                 value="{{ request.form.get('budget','') }}"
+                 placeholder="5000">
+        </label>
+
+
+        <label>
+          Deadline
+
+          <input name="deadline"
+                 type="date"
+                 min="{{ today }}"
+                 required
+                 value="{{ request.form.get('deadline','') }}">
+        </label>
+
+      </div>
+
+
+      <div class="form-section-title">
+
+        <span>02</span>
+
+        <div>
+          <b>Your contact details</b>
+          <small>
+            Freelancers can use these details to discuss your project.
+          </small>
+        </div>
+
+      </div>
+
+
+      <div class="form-row">
+
+        <label>
+          Contact phone number
+
+          <input name="contact_phone"
+                 type="tel"
+                 required
+                 maxlength="30"
+                 value="{{ request.form.get('contact_phone','') }}"
+                 placeholder="e.g. +91 98765 43210"
+                 autocomplete="tel">
+        </label>
+
+
+        <label>
+          Contact email
+
+          <input name="contact_email"
+                 type="email"
+                 required
+                 maxlength="254"
+                 value="{{ request.form.get('contact_email','') }}"
+                 placeholder="you@example.com"
+                 autocomplete="email">
+        </label>
+
+      </div>
+
+
+      <div class="privacy-note">
+        🔒 These details will be shown on the public project page.
+        Share only details you are comfortable publishing.
+      </div>
+
+
+      <button class="btn btn-primary full-btn" type="submit">
+        Post project <span>→</span>
+      </button>
+
+    </form>
+
+  </div>
+
+</section>
+
+{% endblock %}

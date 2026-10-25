@@ -1,0 +1,333 @@
+{% extends "base.html" %}
+
+{% block title %}FreelanceHub | Find your next freelancer{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+  <div class="hero-copy">
+
+    <div class="eyebrow">
+      <span class="dot"></span>
+      YOUR IDEAS, MADE REAL
+    </div>
+
+    <h1>
+      Great work starts<br>
+      with the <span>right people.</span>
+    </h1>
+
+    <p>
+      Discover talented freelancers for your next project,
+      or turn your skills into opportunities.
+    </p>
+
+    <div class="hero-actions">
+
+      <a class="btn btn-primary" href="#services">
+        Explore services <span>→</span>
+      </a>
+
+      <a class="btn btn-light"
+         href="{{ url_for('register') }}">
+        Start freelancing
+      </a>
+
+    </div>
+
+    <div class="trust-row">
+
+      <div class="avatar-stack">
+        <i>M</i>
+        <i>A</i>
+        <i>R</i>
+        <i>+</i>
+      </div>
+
+      <span>Skills for projects of every size</span>
+
+    </div>
+
+  </div>
+
+
+  <div class="hero-art">
+
+    <div class="art-orbit orbit-one"></div>
+    <div class="art-orbit orbit-two"></div>
+
+    <div class="floating-card card-top">
+
+      <span class="mini-icon purple">✦</span>
+
+      <div>
+        <b>Creative ideas</b>
+        <small>Made with care</small>
+      </div>
+
+      <span class="check">✓</span>
+
+    </div>
+
+    <div class="profile-illustration">
+
+      <div class="sun"></div>
+      <div class="person-head"></div>
+      <div class="person-body"></div>
+
+      <div class="laptop">
+        <span>F</span>
+      </div>
+
+    </div>
+
+    <div class="floating-card card-bottom">
+
+      <span class="mini-icon green">↗</span>
+
+      <div>
+        <b>Project started!</b>
+        <small>You're on your way</small>
+      </div>
+
+    </div>
+
+    <div class="sparkle sparkle-a">✦</div>
+    <div class="sparkle sparkle-b">✧</div>
+
+  </div>
+
+</section>
+
+
+<section class="stats">
+
+  <div>
+    <strong>Easy</strong>
+    <span>to get started</span>
+  </div>
+
+  <div>
+    <strong>Many skills</strong>
+    <span>in one place</span>
+  </div>
+
+  <div>
+    <strong>Direct</strong>
+    <span>project requests</span>
+  </div>
+
+  <div>
+    <strong>Anytime</strong>
+    <span>browse online</span>
+  </div>
+
+</section>
+
+
+<section class="section" id="services">
+
+  <div class="section-heading">
+
+    <div>
+
+      <div class="eyebrow">EXPLORE THE MARKETPLACE</div>
+
+      <h2>Services for your next big idea</h2>
+
+      <p>
+        Find the right skills to bring your project to life.
+      </p>
+
+    </div>
+
+    {% if current_role == 'freelancer' %}
+
+      <a class="text-link"
+         href="{{ url_for('add_service') }}">
+        Publish a service ↗
+      </a>
+
+    {% endif %}
+
+  </div>
+
+
+  <form class="search-panel"
+        method="get"
+        action="{{ url_for('index') }}">
+
+    <label class="search-box">
+
+      <span>⌕</span>
+
+      <input type="search"
+             name="q"
+             value="{{ q }}"
+             placeholder="What service are you looking for?">
+
+    </label>
+
+
+    <label class="category-box">
+
+      <span>Category</span>
+
+      <select name="category">
+
+        <option value="">All categories</option>
+
+        {% for cat in categories %}
+
+          <option value="{{ cat }}"
+            {% if selected_category == cat %}selected{% endif %}>
+            {{ cat }}
+          </option>
+
+        {% endfor %}
+
+      </select>
+
+    </label>
+
+
+    <button class="btn btn-primary search-btn" type="submit">
+      Search
+    </button>
+
+  </form>
+
+
+  <div class="results-line">
+
+    <span>
+      {{ services|length }} service{% if services|length != 1 %}s{% endif %}
+      available
+    </span>
+
+    {% if q or selected_category %}
+
+      <a href="{{ url_for('index') }}">Clear filters ×</a>
+
+    {% endif %}
+
+  </div>
+
+
+  <div class="service-grid">
+
+    {% for service in services %}
+
+      <article class="service-card">
+
+        <div class="service-art art-{{ loop.index0 % 4 }}">
+
+          <span>
+            {% if service.category == 'Web Development' %}
+              ⌘
+            {% elif service.category == 'Graphic Design' %}
+              ✦
+            {% elif service.category == 'Writing' %}
+              ✎
+            {% elif service.category == 'Python Automation' %}
+              ⌁
+            {% else %}
+              ◈
+            {% endif %}
+          </span>
+
+          <small>{{ service.category }}</small>
+
+        </div>
+
+
+        <div class="service-body">
+
+          <div class="seller">
+
+            <span class="seller-avatar">
+              {{ service.freelancer_name[0]|upper }}
+            </span>
+
+            <span>{{ service.freelancer_name }}</span>
+
+            <span class="verified">✓</span>
+
+          </div>
+
+
+          <h3>
+            <a href="{{ url_for('service_detail', service_id=service.id) }}">
+              {{ service.title }}
+            </a>
+          </h3>
+
+
+          <p>{{ service.description|truncate(105) }}</p>
+
+
+          <div class="service-foot">
+
+            <span class="starting">STARTING AT</span>
+
+            <strong>
+              ₹{{ "{:,.0f}".format(service.price) }}
+            </strong>
+
+          </div>
+
+
+          <a class="card-hit"
+             href="{{ url_for('service_detail', service_id=service.id) }}"
+             aria-label="View {{ service.title }}">
+          </a>
+
+        </div>
+
+      </article>
+
+    {% else %}
+
+      <div class="empty-state">
+
+        <div>⌕</div>
+
+        <h3>No services found</h3>
+
+        <p>Try a different search or category.</p>
+
+        <a class="btn btn-light" href="{{ url_for('index') }}">
+          Show all services
+        </a>
+
+      </div>
+
+    {% endfor %}
+
+  </div>
+
+</section>
+
+
+<section class="join-banner">
+
+  <div>
+
+    <div class="eyebrow">HAVE A SKILL TO SHARE?</div>
+
+    <h2>Your next opportunity starts here.</h2>
+
+    <p>
+      Create a freelancer profile and publish your first service.
+    </p>
+
+  </div>
+
+  <a class="btn btn-white" href="{{ url_for('register') }}">
+    Join FreelanceHub <span>→</span>
+  </a>
+
+</section>
+
+{% endblock %}

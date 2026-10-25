@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Find Projects | FreelanceHub{% endblock %}
+
+{% block content %}
+
+<section class="section listing-page">
+
+  <div class="section-heading">
+
+    <div>
+      <div class="eyebrow">YOUR NEXT OPPORTUNITY</div>
+
+      <h2>Find projects</h2>
+
+      <p>
+        Browse open projects and send a proposal to clients.
+      </p>
+    </div>
+
+    {% if current_role == 'client' %}
+
+      <a class="btn btn-primary"
+         href="{{ url_for('create_project') }}">
+        ＋ Post a project
+      </a>
+
+    {% endif %}
+
+  </div>
+
+
+  <form class="search-panel"
+        method="get"
+        action="{{ url_for('projects') }}">
+
+    <label class="search-box">
+
+      <span>⌕</span>
+
+      <input type="search"
+             name="q"
+             value="{{ search_query }}"
+             placeholder="Search projects, skills, or clients...">
+
+    </label>
+
+
+    <label class="category-box">
+
+      <span>Category</span>
+
+      <select name="category">
+
+        <option value="">All categories</option>
+
+        {% for cat in categories %}
+
+          <option value="{{ cat }}"
+            {% if selected_category == cat %}selected{% endif %}>
+            {{ cat }}
+          </option>
+
+        {% endfor %}
+
+      </select>
+
+    </label>
+
+
+    <button class="btn btn-primary search-btn" type="submit">
+      Search →
+    </button>
+
+  </form>
+
+
+  <div class="results-line">
+
+    <span>
+      {{ projects|length }} open project{{ '' if projects|length == 1 else 's' }}
+    </span>
+
+    {% if search_query or selected_category %}
+
+      <a href="{{ url_for('projects') }}">Clear filters ×</a>
+
+    {% endif %}
+
+  </div>
+
+
+  <div class="service-grid project-list-grid">
+
+    {% for project in projects %}
+
+      <article class="service-card">
+
+        <a class="card-hit"
+           href="{{ url_for('project_detail', project_id=project.id) }}"
+           aria-label="View {{ project.title }}">
+        </a>
+
+        <div class="service-art art-{{ loop.index0 % 4 }}">
+
+          <small>{{ project.category }}</small>
+
+          <span>▤</span>
+
+        </div>
+
+
+        <div class="service-body">
+
+          <div class="seller">
+
+            <span class="seller-avatar">
+              {{ project.client_name[0]|upper }}
+            </span>
+
+            <span>{{ project.client_name }}</span>
+
+          </div>
+
+
+          <h3>{{ project.title }}</h3>
+
+          <p>{{ project.description|truncate(110) }}</p>
+
+
+          <div class="service-foot">
+
+            <div>
+              <span class="starting">PROJECT BUDGET</span>
+              <br>
+
+              <strong>
+                ₹{{ "{:,.0f}".format(project.budget) }}
+              </strong>
+            </div>
+
+            <span class="text-link">View project →</span>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    {% else %}
+
+      <div class="empty-state">
+
+        <div>▤</div>
+
+        <h3>No open projects found</h3>
+
+        <p>Try another search, or check back later.</p>
+
+        <a class="btn btn-light" href="{{ url_for('projects') }}">
+          Clear search
+        </a>
+
+      </div>
+
+    {% endfor %}
+
+  </div>
+
+</section>
+
+{% endblock %}

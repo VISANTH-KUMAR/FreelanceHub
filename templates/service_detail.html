@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}{{ service.title }} | FreelanceHub{% endblock %}
+
+{% block content %}
+
+<div class="detail-page">
+
+  <a class="back-link" href="{{ url_for('services') }}">
+    ← Explore services
+  </a>
+
+
+  <div class="detail-layout">
+
+    <article class="detail-main">
+
+      <div class="detail-label">
+        {{ service.category }}
+      </div>
+
+      <h1>{{ service.title }}</h1>
+
+
+      <div class="seller detail-seller">
+
+        <span class="seller-avatar large-avatar">
+          {{ service.freelancer_name[0]|upper }}
+        </span>
+
+        <div>
+          <b>{{ service.freelancer_name }}</b>
+          <small>Freelancer on FreelanceHub</small>
+        </div>
+
+        <span class="verified">✓</span>
+
+      </div>
+
+
+      <div class="detail-art">
+        ✦
+        <span>FREELANCEHUB SERVICES</span>
+      </div>
+
+
+      <h2>About this service</h2>
+
+      <p class="detail-description">
+        {{ service.description }}
+      </p>
+
+
+      <div class="contact-card">
+
+        <div class="eyebrow">CONTACT THE FREELANCER</div>
+
+        <h3>{{ service.freelancer_name }}</h3>
+
+        <p>
+          ☎ &nbsp;
+
+          <a href="tel:{{ service.contact_phone }}">
+            {{ service.contact_phone or 'Phone not provided' }}
+          </a>
+        </p>
+
+        <p>
+          ✉ &nbsp;
+
+          <a href="mailto:{{ service.contact_email or service.freelancer_email }}">
+            {{ service.contact_email or service.freelancer_email }}
+          </a>
+        </p>
+
+      </div>
+
+
+      <div class="info-note">
+        Please agree on the scope, price, and delivery timeline
+        before work begins.
+      </div>
+
+    </article>
+
+
+    <aside class="request-card">
+
+      <div class="eyebrow">SERVICE PRICE</div>
+
+      <div class="detail-price">
+        ₹{{ "{:,.0f}".format(service.price) }}
+        <small>starting price</small>
+      </div>
+
+      <p>
+        Interested in this service? Contact the freelancer
+        using the details shown on this page.
+      </p>
+
+
+      {% if not current_user %}
+
+        <a class="btn btn-primary full-btn"
+           href="{{ url_for('login') }}">
+          Log in to continue
+        </a>
+
+      {% elif current_role == 'freelancer'
+             and session.get('user_id') == service.user_id %}
+
+        <div class="info-note">
+          This is your service listing.
+        </div>
+
+      {% else %}
+
+        <div class="info-note">
+          For safety, discuss project requirements and payment
+          terms clearly before starting work.
+        </div>
+
+      {% endif %}
+
+    </aside>
+
+  </div>
+
+</div>
+
+{% endblock %}

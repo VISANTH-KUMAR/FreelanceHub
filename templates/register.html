@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Create account | FreelanceHub{% endblock %}
+
+{% block content %}
+
+<section class="auth-layout">
+
+  <div class="auth-aside">
+
+    <div class="eyebrow">JOIN THE COMMUNITY</div>
+
+    <h1>
+      Your next chapter<br>
+      starts <span>here.</span>
+    </h1>
+
+    <p>
+      Connect your talent with people who need it.
+      Create an account and get started.
+    </p>
+
+    <div class="auth-feature">
+      ✓ &nbsp; Showcase your skills
+    </div>
+
+    <div class="auth-feature">
+      ✓ &nbsp; Discover new opportunities
+    </div>
+
+    <div class="auth-feature">
+      ✓ &nbsp; Manage project requests
+    </div>
+
+  </div>
+
+
+  <div class="form-card">
+
+    <div class="form-icon">✦</div>
+
+    <h2>Create your account</h2>
+
+    <p class="muted">
+      It's free and only takes a minute.
+    </p>
+
+
+    <form method="post" class="form-stack">
+
+      <label>
+        Full name
+
+        <input name="name"
+               required
+               maxlength="80"
+               autocomplete="name"
+               placeholder="e.g. Myla Kumar">
+      </label>
+
+
+      <label>
+        Email address
+
+        <input type="email"
+               name="email"
+               required
+               maxlength="150"
+               autocomplete="email"
+               placeholder="you@example.com">
+      </label>
+
+
+      <label>
+        Password
+
+        <input type="password"
+               name="password"
+               required
+               minlength="8"
+               autocomplete="new-password"
+               placeholder="At least 8 characters">
+
+        <small class="field-help">
+          Use at least 8 characters.
+        </small>
+      </label>
+
+
+      <label>
+        I'm joining as
+
+        <select name="role" required>
+
+          <option value="client">
+            Client — I want to hire
+          </option>
+
+          <option value="freelancer">
+            Freelancer — I want to offer services
+          </option>
+
+        </select>
+
+      </label>
+
+
+      <button class="btn btn-primary full-btn" type="submit">
+        Create account →
+      </button>
+
+    </form>
+
+
+    <p class="form-bottom">
+      Already have an account?
+      <a href="{{ url_for('login') }}">Log in</a>
+    </p>
+
+  </div>
+
+</section>
+
+{% endblock %}

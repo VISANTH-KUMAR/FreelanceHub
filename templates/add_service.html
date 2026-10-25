@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}Publish a service | FreelanceHub{% endblock %}
+
+{% block content %}
+
+<section class="form-page contact-form-page">
+
+  <a class="back-link" href="{{ url_for('dashboard') }}">
+    ← Back to dashboard
+  </a>
+
+
+  <div class="form-card wide-card">
+
+    <div class="form-icon">✦</div>
+
+    <div class="eyebrow">SHOWCASE YOUR SKILLS</div>
+
+    <h2>Publish a new service</h2>
+
+    <p class="muted">
+      Describe your service and add the contact details
+      clients can use to reach you.
+    </p>
+
+
+    <form method="post" class="form-stack">
+
+      <div class="form-section-title">
+
+        <span>01</span>
+
+        <div>
+          <b>Service details</b>
+          <small>Tell clients what you can do.</small>
+        </div>
+
+      </div>
+
+
+      <label>
+        Service title
+
+        <input name="title"
+               required
+               maxlength="100"
+               value="{{ request.form.get('title','') }}"
+               placeholder="e.g. I will build a responsive business website">
+      </label>
+
+
+      <label>
+        Category
+
+        <select name="category" required>
+
+          <option value="">Choose a category</option>
+
+          {% for cat in categories %}
+
+            <option value="{{ cat }}"
+              {% if request.form.get('category') == cat %}selected{% endif %}>
+              {{ cat }}
+            </option>
+
+          {% endfor %}
+
+        </select>
+
+      </label>
+
+
+      <label>
+        Description
+
+        <textarea name="description"
+                  required
+                  maxlength="2000"
+                  rows="5"
+                  placeholder="Describe what the client will receive, your process, and what makes your service useful.">{{ request.form.get('description','') }}</textarea>
+
+        <small class="field-help">
+          Up to 2,000 characters.
+        </small>
+      </label>
+
+
+      <label>
+        Starting price (₹)
+
+        <input name="price"
+               type="number"
+               min="0"
+               max="10000000"
+               step="1"
+               required
+               value="{{ request.form.get('price','') }}"
+               placeholder="1500">
+      </label>
+
+
+      <div class="form-section-title">
+
+        <span>02</span>
+
+        <div>
+          <b>Contact details</b>
+          <small>
+            These details will appear on your public service listing.
+          </small>
+        </div>
+
+      </div>
+
+
+      <div class="form-row">
+
+        <label>
+          Contact phone number
+
+          <input name="contact_phone"
+                 type="tel"
+                 required
+                 maxlength="30"
+                 value="{{ request.form.get('contact_phone','') }}"
+                 placeholder="e.g. +91 98765 43210"
+                 autocomplete="tel">
+        </label>
+
+
+        <label>
+          Contact email
+
+          <input name="contact_email"
+                 type="email"
+                 required
+                 maxlength="254"
+                 value="{{ request.form.get('contact_email','') }}"
+                 placeholder="you@example.com"
+                 autocomplete="email">
+        </label>
+
+      </div>
+
+
+      <div class="privacy-note">
+        🔒 Only add contact details you are comfortable sharing
+        with people who view this listing.
+      </div>
+
+
+      <button class="btn btn-primary full-btn" type="submit">
+        Publish service <span>→</span>
+      </button>
+
+    </form>
+
+  </div>
+
+</section>
+
+{% endblock %}

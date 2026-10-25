@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}My Proposals | FreelanceHub{% endblock %}
+
+{% block content %}
+
+<section class="section">
+
+  <div class="section-heading">
+
+    <div>
+      <div class="eyebrow">FREELANCER WORKSPACE</div>
+
+      <h2>My proposals</h2>
+
+      <p>Track the proposals you've sent to clients.</p>
+    </div>
+
+    <a class="btn btn-primary" href="{{ url_for('projects') }}">
+      Find projects →
+    </a>
+
+  </div>
+
+
+  <div class="dashboard-list">
+
+    {% for proposal in proposals %}
+
+      <div class="request-item">
+
+        <div class="request-top">
+
+          <div>
+            <b>{{ proposal.project_title }}</b>
+
+            <span>
+              Project budget ₹{{ "{:,.0f}".format(proposal.project_budget) }}
+              · Deadline {{ proposal.project_deadline }}
+            </span>
+          </div>
+
+          <span class="status status-{{ proposal.status }}">
+            {{ proposal.status|capitalize }}
+          </span>
+
+        </div>
+
+
+        <p>{{ proposal.message }}</p>
+
+
+        <div class="request-top">
+
+          <span>
+            Your quote:
+            <strong>
+              ₹{{ "{:,.0f}".format(proposal.proposed_price) }}
+            </strong>
+            · {{ proposal.delivery_days }} day(s)
+          </span>
+
+          <a class="small-link"
+             href="{{ url_for('project_detail', project_id=proposal.project_id) }}">
+            View project →
+          </a>
+
+        </div>
+
+      </div>
+
+    {% else %}
+
+      <div class="empty-inline">
+
+        <p>You haven't submitted any proposals yet.</p>
+
+        <a href="{{ url_for('projects') }}">
+          Browse open projects →
+        </a>
+
+      </div>
+
+    {% endfor %}
+
+  </div>
+
+</section>
+
+{% endblock %}

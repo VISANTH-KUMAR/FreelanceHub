@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Log In | FreelanceHub{% endblock %}
+
+{% block content %}
+
+<section class="page-container">
+
+    <div class="form-card">
+
+        <h1>Welcome back!</h1>
+
+        <p>Log in to continue to your FreelanceHub account.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="notice {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('login') }}">
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    autocomplete="email"
+                    placeholder="Enter your email"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    autocomplete="current-password"
+                    placeholder="Enter your password"
+                    required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Log In →
+            </button>
+
+        </form>
+
+        <div class="form-note">
+            Don't have an account?
+            <a href="{{ url_for('register') }}">Register now</a>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

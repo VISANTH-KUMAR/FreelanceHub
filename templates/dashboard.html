@@ -1,0 +1,355 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | FreelanceHub{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page">
+
+  <div class="container">
+
+    <div class="dashboard-welcome">
+
+      <div>
+
+        <span class="section-tag">YOUR WORKSPACE</span>
+
+        <h1>
+          Welcome, {{ session.get('user_name', 'User') }}!
+        </h1>
+
+        {% if session.get('user_role') == 'freelancer' %}
+
+          <p>Manage your services, proposals, and projects.</p>
+
+        {% else %}
+
+          <p>Manage your projects and find the right freelancers.</p>
+
+        {% endif %}
+
+      </div>
+
+      <span class="dashboard-role">
+        {{ session.get('user_role', '')|capitalize }} Account
+      </span>
+
+    </div>
+
+
+    {% if session.get('user_role') == 'freelancer' %}
+
+      <div class="dashboard-stats">
+
+        <div class="dashboard-stat-card">
+
+          <span class="stat-icon">📦</span>
+
+          <div>
+            <p>Published Services</p>
+            <h2>{{ user_services|length }}</h2>
+          </div>
+
+        </div>
+
+
+        <div class="dashboard-stat-card">
+
+          <span class="stat-icon">📨</span>
+
+          <div>
+            <p>Submitted Proposals</p>
+            <h2>{{ user_proposals|length }}</h2>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="dashboard-section-heading">
+
+        <div>
+          <h2>My Services</h2>
+          <p>Manage the services you offer.</p>
+        </div>
+
+        <a href="{{ url_for('add_service') }}" class="btn btn-primary">
+          + Publish Service
+        </a>
+
+      </div>
+
+
+      {% if user_services %}
+
+        <div class="dashboard-services-list">
+
+          {% for service in user_services %}
+
+            <article class="dashboard-service-card">
+
+              <div class="dashboard-service-info">
+
+                <span class="service-category">
+                  {{ service.category }}
+                </span>
+
+                <h3>{{ service.title }}</h3>
+
+                <p>{{ service.description|truncate(120) }}</p>
+
+                <strong>
+                  ₹{{ "%.2f"|format(service.price) }}
+                </strong>
+
+              </div>
+
+
+              <div class="dashboard-service-actions">
+
+                <a href="{{ url_for('service_detail', service_id=service.id) }}"
+                   class="btn btn-outline">
+                  View
+                </a>
+
+                <form method="POST"
+                      action="{{ url_for('delete_service', service_id=service.id) }}"
+                      onsubmit="return confirm('Delete this service?');">
+
+                  <button type="submit" class="btn btn-danger">
+                    Delete
+                  </button>
+
+                </form>
+
+              </div>
+
+            </article>
+
+          {% endfor %}
+
+        </div>
+
+      {% else %}
+
+        <div class="dashboard-empty-state">
+
+          <h3>No services published yet.</h3>
+
+          <p>Publish a service to showcase your skills.</p>
+
+          <a href="{{ url_for('add_service') }}" class="btn btn-primary">
+            Publish Your First Service
+          </a>
+
+        </div>
+
+      {% endif %}
+
+
+      <div class="dashboard-section-heading">
+
+        <div>
+          <h2>My Proposals</h2>
+          <p>Track the proposals you've submitted.</p>
+        </div>
+
+        <a href="{{ url_for('my_proposals') }}" class="btn btn-outline">
+          View All
+        </a>
+
+      </div>
+
+
+      {% if user_proposals %}
+
+        <div class="dashboard-services-list">
+
+          {% for proposal in user_proposals[:5] %}
+
+            <article class="dashboard-service-card">
+
+              <div class="dashboard-service-info">
+
+                <h3>{{ proposal.project_title }}</h3>
+
+                <p>
+                  Your price:
+                  ₹{{ "%.2f"|format(proposal.proposed_price) }}
+                </p>
+
+                <p>
+                  Delivery: {{ proposal.delivery_days }} days
+                </p>
+
+                <span class="status-badge status-{{ proposal.status }}">
+                  {{ proposal.status|capitalize }}
+                </span>
+
+              </div>
+
+              <a href="{{ url_for('project_detail', project_id=proposal.project_id) }}"
+                 class="btn btn-outline">
+                View Project
+              </a>
+
+            </article>
+
+          {% endfor %}
+
+        </div>
+
+      {% else %}
+
+        <div class="dashboard-empty-state">
+
+          <h3>No proposals submitted yet.</h3>
+
+          <p>
+            Explore available projects and submit your first proposal.
+          </p>
+
+          <a href="{{ url_for('projects') }}" class="btn btn-primary">
+            Find Projects
+          </a>
+
+        </div>
+
+      {% endif %}
+
+
+    {% else %}
+
+
+      <div class="dashboard-stats">
+
+        <div class="dashboard-stat-card">
+
+          <span class="stat-icon">📋</span>
+
+          <div>
+            <p>My Projects</p>
+            <h2>{{ user_projects|length }}</h2>
+          </div>
+
+        </div>
+
+
+        <div class="dashboard-stat-card">
+
+          <span class="stat-icon">📨</span>
+
+          <div>
+            <p>Total Proposals</p>
+
+            <h2>
+              {{ user_projects|sum(attribute='proposal_count') }}
+            </h2>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="dashboard-section-heading">
+
+        <div>
+          <h2>My Projects</h2>
+          <p>Track your project requests and freelancer proposals.</p>
+        </div>
+
+        <a href="{{ url_for('create_project') }}" class="btn btn-primary">
+          + Post a Project
+        </a>
+
+      </div>
+
+
+      {% if user_projects %}
+
+        <div class="dashboard-services-list">
+
+          {% for project in user_projects %}
+
+            <article class="dashboard-service-card">
+
+              <div class="dashboard-service-info">
+
+                <span class="service-category">
+                  {{ project.category }}
+                </span>
+
+                <h3>{{ project.title }}</h3>
+
+                <p>
+                  Budget: ₹{{ "%.2f"|format(project.budget) }}
+                </p>
+
+                <p>
+                  Deadline: {{ project.deadline }}
+                </p>
+
+                <p>
+                  Proposals:
+                  {{ project['proposal_count']|default(0) }}
+                </p>
+
+                <span class="status-badge status-{{ project.status }}">
+                  {{ project.status|capitalize }}
+                </span>
+
+              </div>
+
+
+              <a href="{{ url_for('project_detail', project_id=project.id) }}"
+                 class="btn btn-primary">
+                View Project
+              </a>
+
+            </article>
+
+          {% endfor %}
+
+        </div>
+
+      {% else %}
+
+        <div class="dashboard-empty-state">
+
+          <h3>You haven't posted any projects.</h3>
+
+          <p>
+            Describe your requirements and invite freelancers
+            to submit proposals.
+          </p>
+
+          <a href="{{ url_for('create_project') }}" class="btn btn-primary">
+            Post Your First Project
+          </a>
+
+        </div>
+
+      {% endif %}
+
+
+    {% endif %}
+
+
+    <div class="dashboard-quick-links">
+
+      <a href="{{ url_for('services') }}">Explore Services →</a>
+
+      <a href="{{ url_for('projects') }}">Browse Projects →</a>
+
+      <a href="{{ url_for('home') }}">Back to Home →</a>
+
+    </div>
+
+  </div>
+
+</section>
+
+{% endblock %}

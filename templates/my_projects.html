@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}My Projects | FreelanceHub{% endblock %}
+
+{% block content %}
+
+<section class="section">
+
+  <div class="section-heading">
+
+    <div>
+      <div class="eyebrow">CLIENT WORKSPACE</div>
+
+      <h2>My projects</h2>
+
+      <p>Review your project posts and incoming proposals.</p>
+    </div>
+
+    <a class="btn btn-primary"
+       href="{{ url_for('create_project') }}">
+      ＋ Post a project
+    </a>
+
+  </div>
+
+
+  <div class="dashboard-list">
+
+    {% for project in projects %}
+
+      <div class="dash-item">
+
+        <div class="dash-item-icon">▤</div>
+
+        <div class="dash-item-main">
+
+          <b>{{ project.title }}</b>
+
+          <span>
+            {{ project.category }}
+            · Budget ₹{{ "{:,.0f}".format(project.budget) }}
+            · {{ project.proposal_count }} proposal(s)
+          </span>
+
+        </div>
+
+        <span class="status status-{{ project.status }}">
+          {{ project.status|capitalize }}
+        </span>
+
+        <a class="small-link"
+           href="{{ url_for('project_detail', project_id=project.id) }}">
+          Open →
+        </a>
+
+      </div>
+
+    {% else %}
+
+      <div class="empty-inline">
+
+        <p>You haven't posted any projects yet.</p>
+
+        <a href="{{ url_for('create_project') }}">
+          Post your first project →
+        </a>
+
+      </div>
+
+    {% endfor %}
+
+  </div>
+
+</section>
+
+{% endblock %}

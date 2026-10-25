@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#6657e8">
+
+  <title>{% block title %}FreelanceHub{% endblock %}</title>
+
+  <link rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}">
+
+  <script defer
+          src="{{ url_for('static', filename='js/main.js') }}"></script>
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+
+    <a class="brand"
+       href="{{ url_for('home') }}"
+       aria-label="FreelanceHub home">
+
+      <span class="brand-mark">F</span>
+      <span>FreelanceHub</span>
+
+    </a>
+
+    <button class="menu-toggle"
+            id="menuToggle"
+            aria-label="Toggle navigation"
+            aria-expanded="false">☰</button>
+
+    <nav id="mainNav" aria-label="Main navigation">
+
+      <a href="{{ url_for('services') }}">Explore services</a>
+      <a href="{{ url_for('projects') }}">Find projects</a>
+
+      {% if current_user %}
+
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+
+        {% if current_role == 'freelancer' %}
+
+          <a class="nav-cta"
+             href="{{ url_for('add_service') }}">
+            ＋ Publish service
+          </a>
+
+        {% elif current_role == 'client' %}
+
+          <a class="nav-cta"
+             href="{{ url_for('create_project') }}">
+            ＋ Post a project
+          </a>
+
+        {% endif %}
+
+        <span class="nav-user">
+          Hi, {{ current_user['name'] }}
+        </span>
+
+        <a class="logout-link"
+           href="{{ url_for('logout') }}"
+           onclick="return confirm('Are you sure you want to log out?')">
+          ↪ Log out
+        </a>
+
+      {% else %}
+
+        <a href="{{ url_for('login') }}">Log in</a>
+
+        <a class="nav-cta"
+           href="{{ url_for('register') }}">
+          Join free
+        </a>
+
+      {% endif %}
+
+    </nav>
+  </div>
+</header>
+
+
+<main class="page-wrap">
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+
+    {% if messages %}
+
+      <div class="flash-stack"
+           role="status"
+           aria-live="polite">
+
+        {% for category, message in messages %}
+
+          <div class="flash {{ category }}">
+            {{ message }}
+          </div>
+
+        {% endfor %}
+
+      </div>
+
+    {% endif %}
+
+  {% endwith %}
+
+
+  {% if error_message %}
+
+    <section class="empty-state">
+
+      <h2>Something went wrong</h2>
+
+      <p>{{ error_message }}</p>
+
+      <a class="btn btn-primary"
+         href="{{ url_for('home') }}">
+        Back to home
+      </a>
+
+    </section>
+
+  {% endif %}
+
+
+  {% block content %}{% endblock %}
+
+</main>
+
+
+<footer class="footer">
+
+  <div>
+    <strong>FreelanceHub</strong>
+    <span>Find skills. Build ideas. Get work done.</span>
+  </div>
+
+  <p>Educational mini project · Built with Flask</p>
+
+</footer>
+
+</body>
+</html>
